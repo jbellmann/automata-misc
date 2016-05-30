@@ -1,0 +1,12 @@
+#Eclipse
+.classpath
+.settings
+.project
+
+# Intellij Settings
+*.iml
+.idea
+
+#Maven
+target
+pom.xml.versionBackup
