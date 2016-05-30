@@ -8,7 +8,7 @@
         <relativePath />
     </parent>
     <artifactId>step-sequence</artifactId>
-    <version>0.8.0</version>
+    <version>0.8.1-SNAPSHOT</version>
     <name>Workflow Execution Tool</name>
 
     <properties>
@@ -61,6 +61,6 @@
         <url>https://github.com/zalando-incubator/automata-misc</url>
         <connection>scm:git:https://github.com/zalando-incubator/automata-misc.git</connection>
         <developerConnection>scm:git:https://github.com/zalando-incubator/automata-misc.git</developerConnection>
-      <tag>step-sequence-0.8.0</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
