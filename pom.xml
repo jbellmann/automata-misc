@@ -9,6 +9,7 @@
 
     <modules>
         <module>poms/automata-oss-parent</module>
+        <module>step-sequence</module>
     </modules>
 
     <build>
