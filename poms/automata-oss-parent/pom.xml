@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.zalando.automata</groupId>
     <artifactId>automata-oss-parent</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1</version>
     <packaging>pom</packaging>
     <name>Automata OSS Parent</name>
 
@@ -305,7 +304,8 @@
         <url>https://github.com/zalando-incubator/automata-misc</url>
         <connection>scm:git:https://github.com/zalando-incubator/automata-misc.git</connection>
         <developerConnection>scm:git:https://github.com/zalando-incubator/automata-misc.git</developerConnection>
-    </scm>
+      <tag>automata-oss-parent-1</tag>
+  </scm>
 
     <issueManagement>
         <system>GitHub</system>
