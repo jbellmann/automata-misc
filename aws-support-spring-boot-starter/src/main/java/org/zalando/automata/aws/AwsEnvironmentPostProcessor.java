@@ -25,6 +25,7 @@ public class AwsEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
 	public static final String AWS_REGION_KEY = AWS_PREFIX + ".region";
 	public static final String AWS_HOSTNAME_KEY = AWS_PREFIX + ".localhostname";
 	public static final String AWS_LOCAL_IPV4_KEY = AWS_PREFIX + ".localipv4";
+	public static final String AWS_INSTANCE_ID_KEY = AWS_PREFIX + ".instanceid";
 
 	// Before ConfigFileApplicationListener so values there can use these ones
 	private int order = ConfigFileApplicationListener.DEFAULT_ORDER - 1;
@@ -49,6 +50,7 @@ public class AwsEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
 			properties.put(AWS_REGION_KEY, getAwsRegion());
 			properties.put(AWS_HOSTNAME_KEY, getAwsLocalHostname());
 			properties.put(AWS_LOCAL_IPV4_KEY, getAwsLocalIpV4());
+			properties.put(AWS_INSTANCE_ID_KEY, getInstanceId());
 			log.info("'AWS'-metadata : {}", properties.toString());
 		} else {
 			log.info("Ignore 'AWS', no metadata available.");
@@ -83,6 +85,10 @@ public class AwsEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
 
 	protected String getAwsLocalHostname() {
 		return EC2MetadataUtils.getLocalHostName();
+	}
+
+	protected String getInstanceId() {
+		return EC2MetadataUtils.getInstanceId();
 	}
 
 	protected boolean awsMetadataServiceIsAvailable() {
