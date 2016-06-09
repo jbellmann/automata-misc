@@ -10,6 +10,7 @@
     <modules>
         <module>poms/automata-oss-parent</module>
         <module>step-sequence</module>
+        <module>aws-support-spring-boot-starter</module>
     </modules>
 
     <build>
