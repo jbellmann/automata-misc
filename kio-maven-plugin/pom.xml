@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.zalando.maven.plugins</groupId>
     <artifactId>kio-maven-plugin</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.1</version>
     <packaging>maven-plugin</packaging>
 
     <properties>
@@ -221,6 +221,6 @@
         <url>https://github.com/zalando-incubator/automata-misc</url>
         <connection>scm:git:https://github.com/zalando-incubator/automata-misc.git</connection>
         <developerConnection>scm:git:https://github.com/zalando-incubator/automata-misc.git</developerConnection>
-      <tag>HEAD</tag>
+      <tag>kio-maven-plugin-0.5.1</tag>
   </scm>
 </project>
