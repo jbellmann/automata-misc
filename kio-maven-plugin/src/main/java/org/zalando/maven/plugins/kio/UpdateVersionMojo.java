@@ -27,6 +27,10 @@ import okhttp3.Response;
 @Mojo(name = "updateVersion", requiresProject = true, threadSafe = false, requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class UpdateVersionMojo extends AbstractMojo {
 
+    private static final String TOKENS_YAML = "tokens.yaml";
+
+    private static final String KIO_TOKEN_KEY = "kio";
+
     private static final String ACCESS_TOKEN = "access_token";
 
     private static final String BEARER = "Bearer: ";
@@ -53,6 +57,9 @@ public class UpdateVersionMojo extends AbstractMojo {
     @Parameter(required = false, defaultValue = "false")
     protected boolean skip = false;
 
+    @Parameter(required = false, defaultValue = "false")
+    private boolean enableLog = false;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (skip) {
             getLog().info("PLUGIN WAS SET TO SKIP, CHECK POM.XML");
@@ -75,9 +82,15 @@ public class UpdateVersionMojo extends AbstractMojo {
         OkHttpClient client = new OkHttpClient.Builder().connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).build();
         try {
+            final String token = getToken();
+            final String url = buildUrl();
+            if(enableLog){
+                getLog().info("URL_USED : " + url);
+                getLog().info("TOKEN_USED : " + token.substring(0, 8));
+            }
             RequestBody body = RequestBody.create(JSON, buildBodyContent(r));
-            Request request = new Request.Builder().url(buildUrl()).put(body)
-                    .addHeader(AUTHORIZATION, BEARER + getToken()).build();
+            Request request = new Request.Builder().url(url).put(body)
+                    .addHeader(AUTHORIZATION, BEARER + token).build();
             try (Response response = client.newCall(request).execute()) {
                 String result = response.body().string();
                 getLog().info(result);
@@ -110,8 +123,8 @@ public class UpdateVersionMojo extends AbstractMojo {
 
         @SuppressWarnings("unchecked")
         Map<String, LinkedHashMap<String, String>> map = mapper
-                .readValue(new File(applicationSupportDirectory, "tokens.yaml"), Map.class);
-        LinkedHashMap<String, String> json = map.get("kio");
+                .readValue(new File(applicationSupportDirectory, TOKENS_YAML), Map.class);
+        LinkedHashMap<String, String> json = map.get(KIO_TOKEN_KEY);
         if (json == null) {
             getLog().error("no token found for 'kio', run 'zign token kio' before.");
             throw new IOException("No Token found for 'kio'");
