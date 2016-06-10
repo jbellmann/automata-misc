@@ -107,6 +107,8 @@ public class UpdateVersionMojo extends AbstractMojo {
         }
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+
+        @SuppressWarnings("unchecked")
         Map<String, LinkedHashMap<String, String>> map = mapper
                 .readValue(new File(applicationSupportDirectory, "tokens.yaml"), Map.class);
         LinkedHashMap<String, String> json = map.get("kio");
