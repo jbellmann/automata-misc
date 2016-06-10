@@ -33,7 +33,7 @@ public class UpdateVersionMojo extends AbstractMojo {
 
     private static final String ACCESS_TOKEN = "access_token";
 
-    private static final String BEARER = "Bearer: ";
+    private static final String BEARER = "Bearer ";
 
     private static final String AUTHORIZATION = "Authorization";
 
