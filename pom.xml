@@ -11,6 +11,7 @@
         <module>poms/automata-oss-parent</module>
         <module>step-sequence</module>
         <module>aws-support-spring-boot-starter</module>
+        <module>kio-maven-plugin</module>
     </modules>
 
     <build>
