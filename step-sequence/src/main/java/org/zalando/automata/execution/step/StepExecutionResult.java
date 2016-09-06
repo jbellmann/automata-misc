@@ -3,18 +3,18 @@ package org.zalando.automata.execution.step;
 import java.util.Optional;
 
 /**
- * @author maryefyev 
+ * @author maryefyev
  */
 public class StepExecutionResult {
-    
+
     private String stepName;
     private StepExecutionStatus stepExecutionStatus;
-    private Optional<String> errorMessage = Optional.empty();    
+    private Optional<String> errorMessage = Optional.empty();
 
     public StepExecutionResult(final String stepName,
                                final StepExecutionStatus stepExecutionStatus) {
         this.stepName = stepName;
-        this.stepExecutionStatus = stepExecutionStatus;            
+        this.stepExecutionStatus = stepExecutionStatus;
     }
 
     public StepExecutionStatus getStepExecutionStatus() {
@@ -41,18 +41,20 @@ public class StepExecutionResult {
                                                                    final ActionOnFailure actionOnFailure,
                                                                    final String errorMessage){
         StepExecutionResult stepExecutionResult;
-        
+
         if(actionOnFailure == ActionOnFailure.FAIL){
-            stepExecutionResult = new StepExecutionResult(stepName, StepExecutionStatus.FAILED);            
+            stepExecutionResult = new StepExecutionResult(stepName, StepExecutionStatus.FAILED);
+        } else if (actionOnFailure == ActionOnFailure.ROLLBACK) {
+            stepExecutionResult = new StepExecutionResult(stepName, StepExecutionStatus.ROLLBACK);
         } else {
-            stepExecutionResult = new StepExecutionResult(stepName, StepExecutionStatus.WARNING);            
+            stepExecutionResult = new StepExecutionResult(stepName, StepExecutionStatus.WARNING);
         }
 
         stepExecutionResult.errorMessage = Optional.ofNullable(errorMessage);
-        
+
         return stepExecutionResult;
     }
-    
+
     public String toString(){
         final StringBuilder stringBuilder = new StringBuilder()
                 .append("[ STEP ] ").append(this.stepName).append("\n")

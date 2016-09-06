@@ -6,5 +6,6 @@ package org.zalando.automata.execution.sequence;
 public enum SequenceExecutionStatus {
     IN_PROGRESS,
     FAILED,
+    ROLLBACK,
     SUCCESS
 }
