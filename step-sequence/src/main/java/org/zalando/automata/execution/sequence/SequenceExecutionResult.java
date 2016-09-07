@@ -1,74 +1,73 @@
 package org.zalando.automata.execution.sequence;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import org.zalando.automata.execution.step.StepExecutionResult;
 import org.zalando.automata.execution.step.StepExecutionStatus;
+
+import static org.zalando.automata.execution.sequence.SequenceExecutionStatus.*;
 
 /**
  * Created by maryefyev on 07.12.15.
  */
 public class SequenceExecutionResult {
-    
-    private String sequenceName;
 
-    private Optional<String> sequenceId = Optional.empty();
-    
-    private SequenceExecutionStatus executionStatus = SequenceExecutionStatus.IN_PROGRESS;
-    
-    private final LocalDateTime started = LocalDateTime.now();
-    
-    private List<StepExecutionResult> stepResults = new LinkedList<>();
+    private final String sequenceName;
+    private final String sequenceId;
+    private final LocalDateTime started;
+    private final List<StepExecutionResult> stepResults;
+
+    private SequenceExecutionStatus executionStatus = IN_PROGRESS;
 
     public SequenceExecutionResult(final String sequenceName) {
-        this.sequenceName = sequenceName;
+        this(sequenceName, null);
     }
 
     public SequenceExecutionResult(final String sequenceName, final String sequenceId) {
         this.sequenceName = sequenceName;
-        this.sequenceId = Optional.of(sequenceId);
+        this.sequenceId = sequenceId;
+        this.started = LocalDateTime.now();
+        this.stepResults = new ArrayList<>();
     }
 
     public String getSequenceName() {
         return sequenceName;
     }
 
-    public SequenceExecutionStatus addStepResult(final StepExecutionResult stepExecutionResult, final boolean isLastStep){        
-        if(this.executionStatus.equals(SequenceExecutionStatus.SUCCESS)){
-            throw new SequenceResultBuildException("Sequence in status SUCCESS does not accept further step results");
-        }
-        
-        if(this.executionStatus.equals(SequenceExecutionStatus.FAILED) 
-                && !stepExecutionResult.getStepExecutionStatus().equals(StepExecutionStatus.SKIPPED)){
-            //if previous step has failed, it is not allowed to run further steps
-            throw new SequenceResultBuildException("FAILED sequence accepts only tests with status SKIPPED");
+    public SequenceExecutionStatus addStepResult(final StepExecutionResult stepResult, final boolean isLastStep){
+        //  Add the step result.  If the sequence has already failed or rolled back, only skipped steps can be accepted.
+        //  If the sequence has already succeeded, no steps are accepted.
+        //  Are we being overly defensive here?  Shouldn't the executor handle this?
+        if(SUCCESS.equals(executionStatus)) {
+            throw new SequenceResultBuildException("Sequence in status SUCCESS does not accept further step results.");
+        } else if ((FAILED.equals(executionStatus) || ROLLBACK.equals(executionStatus))
+                && !StepExecutionStatus.SKIPPED.equals(stepResult.getStepExecutionStatus())) {
+            throw new SequenceResultBuildException("Sequence in failed or rollback state can accepts only steps with status SKIPPED.");
         } else {
-            this.stepResults.add(stepExecutionResult);
-        }
-        
-        if(this.executionStatus.equals(SequenceExecutionStatus.FAILED)){
-            return this.executionStatus;
-        } else {
+            stepResults.add(stepResult);
 
-            if(stepExecutionResult.getStepExecutionStatus().equals(StepExecutionStatus.FAILED)){
-                this.executionStatus = SequenceExecutionStatus.FAILED;
-                return SequenceExecutionStatus.FAILED;
-            } else {
-                if (isLastStep){
-                    this.executionStatus = SequenceExecutionStatus.SUCCESS;
-                    return SequenceExecutionStatus.SUCCESS;
-                } else {
-                    return SequenceExecutionStatus.IN_PROGRESS;
-                }
-            }
-        }      
+        }
+
+        //  TODO: these should be the same enum - no time to update all the downstream consumers right now though.
+        if (FAILED.equals(executionStatus) || StepExecutionStatus.FAILED.equals(stepResult.getStepExecutionStatus())) {
+            return executionStatus = FAILED;
+        }
+
+        if (ROLLBACK.equals(executionStatus) || StepExecutionStatus.ROLLBACK.equals(stepResult.getStepExecutionStatus())) {
+            return executionStatus = ROLLBACK;
+        }
+
+        if (isLastStep) {
+            return executionStatus = SUCCESS;
+        } else {
+            return executionStatus = IN_PROGRESS;
+        }
     }
 
-    public Optional<String> getSequenceId() {
+    public String getSequenceId() {
         return sequenceId;
     }
 
@@ -83,19 +82,19 @@ public class SequenceExecutionResult {
     public LocalDateTime getStarted() {
         return this.started;
     }
-    
+
     public String getPrintableResult(){
         final StringBuilder builder = new StringBuilder()
-                .append("[ ID ] ").append(this.sequenceId.orElse("UNKNOWN")).append("\n")
-                .append("[ SEQUENCE ] ").append(this.sequenceName).append("\n")                
-                .append("[ STARTED ] ").append(this.started).append("\n")
-                .append("[ STATUS ] ").append(this.executionStatus).append("\n");
-        
+                .append("[ ID ] ").append(sequenceId).append("\n")
+                .append("[ SEQUENCE ] ").append(sequenceName).append("\n")
+                .append("[ STARTED ] ").append(started).append("\n")
+                .append("[ STATUS ] ").append(executionStatus).append("\n");
+
         this.stepResults.stream()
                 .filter(step -> step.getStepExecutionStatus().equals(StepExecutionStatus.FAILED) ||
                         step.getStepExecutionStatus().equals(StepExecutionStatus.WARNING))
                 .forEach(step -> builder.append(" { ").append(step).append(" } "));
-        
+
         return builder.toString();
     }
 }

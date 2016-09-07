@@ -4,12 +4,12 @@ import org.zalando.automata.execution.Context;
 import org.zalando.automata.execution.exception.ContextDependencyException;
 
 /**
- * @author maryefyev 
+ * @author maryefyev
  */
 public abstract class AbstractStep implements Step {
 
     protected Context context;
-    private ActionOnFailure actionOnFailure; //if exception in this step should lead to a sequence failure    
+    private ActionOnFailure actionOnFailure; //if exception in this step should lead to a sequence failure
 
     public AbstractStep() {
         this.actionOnFailure = ActionOnFailure.FAIL;
@@ -26,6 +26,10 @@ public abstract class AbstractStep implements Step {
 
     public ActionOnFailure getActionOnFailure() {
         return this.actionOnFailure;
+    }
+
+    public void setActionOnFailure(ActionOnFailure action) {
+        this.actionOnFailure = action;
     }
 
     /**

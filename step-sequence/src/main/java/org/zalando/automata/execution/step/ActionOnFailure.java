@@ -5,5 +5,6 @@ package org.zalando.automata.execution.step;
  */
 public enum ActionOnFailure {
     FAIL,
+    ROLLBACK,
     PROCEED
 }
