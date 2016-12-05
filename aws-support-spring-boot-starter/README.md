@@ -26,10 +26,11 @@ or this to you Gradle:
 
 If the application is starting on AWS it will provide/set the following properties.
 
-| property      | Are           
+| property      | Description           
 | ------------- |-------------:|
 | aws.az      | Availability-Zone
 | aws.region      | Region      
 | aws.localhostname | Hostname  
 | aws.localipv4 | IP ( v. 4)
 | aws.instanceid | Instance-Id 
+
